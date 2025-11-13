@@ -13,9 +13,6 @@ dist/
 build/
 .DS_Store
 
-# Vite
-frontend/.vite/
-frontend/dist/
 
 # Logs
 *.log
