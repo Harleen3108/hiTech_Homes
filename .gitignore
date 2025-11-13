@@ -1,0 +1,21 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment
+.env
+backend/.env
+frontend/.env
+
+# Build
+dist/
+build/
+.DS_Store
+
+# Vite
+frontend/.vite/
+frontend/dist/
+
+# Logs
+*.log
