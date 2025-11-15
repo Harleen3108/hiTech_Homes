@@ -21,19 +21,41 @@ const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Update the handleSubmit function (around line 19)
+  // Send message via WhatsApp
   const handleSubmit = async () => {
+    // Validate form
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.message
+    ) {
+      alert("Please fill in all fields");
+      return;
+    }
+
     setLoading(true);
+
     try {
-      const response = await api.post('/enquiries', formData);
-      if (response.data.success) {
-        setSubmitted(true);
-        setFormData({ name: "", email: "", phone: "", message: "" });
-        setTimeout(() => setSubmitted(false), 4000);
-      }
+      // Format message for WhatsApp
+      const whatsappMessage = `*New Contact Form Submission*%0A%0A*Name:* ${formData.name}%0A*Email:* ${formData.email}%0A*Phone:* ${formData.phone}%0A*Message:* ${formData.message}`;
+
+      // WhatsApp number (7743040191)
+      const phoneNumber = "917743040191"; // Add country code (91 for India)
+
+      // Create WhatsApp URL
+      const whatsappURL = `https://wa.me/${phoneNumber}?text=${whatsappMessage}`;
+
+      // Open WhatsApp in new tab
+      window.open(whatsappURL, "_blank");
+
+      // Show success message
+      setSubmitted(true);
+      setFormData({ name: "", email: "", phone: "", message: "" });
+      setTimeout(() => setSubmitted(false), 4000);
     } catch (error) {
-      console.error("Error submitting enquiry:", error);
-      alert(error.response?.data?.message || "Failed to submit enquiry. Please try again.");
+      console.error("Error sending message:", error);
+      alert("Failed to send message. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -88,7 +110,7 @@ const Contact = () => {
             </div>
 
             <div className="flex gap-3 mt-6">
-              {[Facebook, Instagram,Twitter].map((Icon, i) => (
+              {[Facebook, Instagram, Twitter].map((Icon, i) => (
                 <a
                   key={i}
                   href="#"

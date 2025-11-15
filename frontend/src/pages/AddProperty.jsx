@@ -247,7 +247,7 @@ const AddProperty = ({ setCurrentPage }) => {
                       className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl text-base focus:border-red-600 focus:ring-4 focus:ring-red-100 outline-none transition-all"
                     />
                   </div>
-
+H
                   <div className="col-span-2">
                     <label className="flex items-center gap-2 text-base font-semibold text-gray-700 mb-3">
                       <MapPin size={18} className="text-blue-600" />
@@ -381,7 +381,7 @@ const AddProperty = ({ setCurrentPage }) => {
                     <button
                       type="button"
                       onClick={() => document.getElementById("images").click()}
-                      className="w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold text-base hover:from-blue-700 hover:to-blue-800 transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                      className="w-full px-6 py-4 bg-gradient-to-r from-sky-400 to-sky-400 text-white rounded-xl font-semibold text-base hover:from-blue-700 hover:to-blue-800 transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                     >
                       <ImageIcon size={20} />
                       Upload Images
@@ -413,7 +413,7 @@ const AddProperty = ({ setCurrentPage }) => {
                             <button
                               type="button"
                               onClick={() => removeImage(index)}
-                              className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
+                              className="absolute top-1 right-1 bg-red-400 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
                             >
                               <X size={14} />
                             </button>
@@ -434,7 +434,7 @@ const AddProperty = ({ setCurrentPage }) => {
                       className={`w-full px-6 py-4 ${
                         videoFile
                           ? "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800"
-                          : "bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800"
+                          : "bg-gradient-to-r from-red-400 to-red-400 hover:from-red-400 hover:to-red-700"
                       } text-white rounded-xl font-semibold text-base transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:-translate-y-0.5`}
                     >
                       <Video size={20} />
@@ -477,7 +477,7 @@ const AddProperty = ({ setCurrentPage }) => {
                   className={`flex-1 px-8 py-5 ${
                     loading
                       ? "bg-gradient-to-r from-gray-400 to-gray-500 cursor-not-allowed"
-                      : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 hover:-translate-y-1 hover:shadow-2xl"
+                      : "bg-gradient-to-r from-sky-400 to-sky-400 hover:from-blue-600 hover:to-blue-800 hover:-translate-y-1 hover:shadow-2xl"
                   } text-white rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center gap-3 shadow-xl`}
                 >
                   {loading ? (

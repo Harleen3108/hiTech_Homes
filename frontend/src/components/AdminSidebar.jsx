@@ -10,6 +10,7 @@ import {
   Menu,
   X,
   Mail,
+  BarChart3,
 } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 
@@ -28,6 +29,7 @@ const AdminSidebar = ({ currentPage, setCurrentPage }) => {
     icon: Mail,
     badge: pendingCount > 0 ? pendingCount : null
   },
+  { name: "Analytics", page: "admin-analytics", icon: BarChart3 }, // ADD THIS LINE
   { name: "Add Property", page: "add-property", icon: Plus },
   { name: "View Site", page: "home", icon: Home },
 ];
@@ -114,67 +116,126 @@ const AdminSidebar = ({ currentPage, setCurrentPage }) => {
       >
         {/* ===== HEADER ===== */}
         <div
+  style={{
+    padding: "1.5rem",
+    borderBottom: "1px solid #e5e7eb",
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.75rem",
+    background: "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)",
+  }}
+>
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    }}
+  >
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "0.75rem",
+      }}
+    >
+      <div
+        style={{
+          width: "2.5rem",
+          height: "2.5rem",
+          background: "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)",
+          borderRadius: "12px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "white",
+          fontWeight: "800",
+          fontSize: "1.25rem",
+          boxShadow: "0 4px 12px rgba(37, 99, 235, 0.3)",
+        }}
+      >
+        A
+      </div>
+      <div>
+        <div
           style={{
-            padding: "1.5rem",
-            borderBottom: "1px solid #e5e7eb",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            background: "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)",
+            fontSize: "1rem",
+            fontWeight: "700",
+            color: "#1f2937",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-            }}
-          >
-            <Building2
-              style={{
-                width: "2.5rem",
-                height: "2.5rem",
-                color: "#2563eb",
-                flexShrink: 0,
-                animation: "pulse 3s ease-in-out infinite",
-              }}
-            />
-            <span
-              style={{
-                fontSize: "1.25rem",
-                fontWeight: 800,
-                background: "linear-gradient(135deg, #2563eb 0%, #dc2626 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              Admin Panel
-            </span>
-          </div>
-
-          {/* Close Button */}
-          <button
-            onClick={toggleSidebar}
-            style={{
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              color: "#4b5563",
-              padding: "0.5rem",
-              borderRadius: "8px",
-              transition: "all 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#f3f4f6";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
-            }}
-            title="Close Sidebar"
-          >
-            <X size={24} />
-          </button>
+          Admin
         </div>
+        <div
+          style={{
+            fontSize: "0.75rem",
+            fontWeight: "600",
+            color: "#6b7280",
+          }}
+        >
+          Dashboard
+        </div>
+      </div>
+    </div>
+
+    {/* Close Button */}
+    <button
+      onClick={toggleSidebar}
+      style={{
+        background: "transparent",
+        border: "none",
+        cursor: "pointer",
+        color: "#4b5563",
+        padding: "0.5rem",
+        borderRadius: "8px",
+        transition: "all 0.2s ease",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = "#f3f4f6";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = "transparent";
+      }}
+      title="Close Sidebar"
+    >
+      <X size={24} />
+    </button>
+  </div>
+
+  {/* Admin Badge */}
+  <div
+    style={{
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "0.5rem",
+      padding: "0.5rem 1rem",
+      background: "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)",
+      borderRadius: "9999px",
+      boxShadow: "0 4px 12px rgba(37, 99, 235, 0.3)",
+      alignSelf: "flex-start",
+    }}
+  >
+    <div
+      style={{
+        width: "8px",
+        height: "8px",
+        background: "#10b981",
+        borderRadius: "50%",
+        animation: "pulse 2s ease-in-out infinite",
+      }}
+    ></div>
+    <span
+      style={{
+        fontSize: "0.75rem",
+        fontWeight: "700",
+        color: "white",
+        letterSpacing: "0.025em",
+      }}
+    >
+      ADMIN ACCESS
+    </span>
+  </div>
+</div>
 
         {/* ===== NAVIGATION ===== */}
         <nav

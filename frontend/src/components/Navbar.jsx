@@ -2,9 +2,11 @@ import { useContext, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import logo from "../assets/logo1.png";
+import { UserAuthContext } from "../context/UserAuthContext";
 
 const Navbar = ({ currentPage, setCurrentPage }) => {
   const { user, logout } = useContext(AuthContext);
+  const { user: regularUser, logout: userLogout } = useContext(UserAuthContext);
   const [mobileMenu, setMobileMenu] = useState(false);
 
   const navLinks = [
@@ -65,34 +67,69 @@ const Navbar = ({ currentPage, setCurrentPage }) => {
 
           {/* ===== RIGHT SIDE BUTTONS ===== */}
           <div className="hidden md:flex items-center space-x-4">
-            {user ? (
-              <>
-                <button
-                  onClick={() => handleNavigate("admin-dashboard")}
-                  className="text-base font-semibold text-gray-700 hover:text-sky-600 relative group"
-                  style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif" }}
-                >
-                  Dashboard
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-sky-500 group-hover:w-full transition-all duration-300"></span>
-                </button>
-                <button
-                  onClick={logout}
-                  className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-red-500 to-red-600 text-white font-bold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
-                  style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif" }}
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={() => handleNavigate("admin-login")}
-                className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-sky-500 to-sky-600 text-white font-bold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
-                style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif" }}
-              >
-                Admin Login
-              </button>
-            )}
-          </div>
+  {user ? (
+    <>
+      <button
+        onClick={() => handleNavigate("admin-dashboard")}
+        className="text-base font-semibold text-gray-700 hover:text-sky-600 relative group"
+        style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif" }}
+      >
+        Dashboard
+        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-sky-500 group-hover:w-full transition-all duration-300"></span>
+      </button>
+      <button
+        onClick={logout}
+        className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-red-500 to-red-600 text-white font-bold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+        style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif" }}
+      >
+        Logout
+      </button>
+    </>
+  ) : regularUser ? (
+    <>
+      <div className="flex items-center gap-2 px-4 py-2 bg-sky-50 rounded-lg">
+        <div className="w-8 h-8 bg-gradient-to-br from-sky-500 to-sky-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+          {regularUser.name?.charAt(0).toUpperCase()}
+        </div>
+        <span className="text-sm font-semibold text-gray-700">{regularUser.name}</span>
+      </div>
+      <button
+        onClick={() => {
+          userLogout();
+          handleNavigate("home");
+        }}
+        className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-red-500 to-red-600 text-white font-bold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+        style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif" }}
+      >
+        Logout
+      </button>
+    </>
+  ) : (
+    <>
+      <button
+        onClick={() => handleNavigate("user-login")}
+        className="px-6 py-2.5 rounded-lg border-2 border-sky-500 text-sky-600 font-bold hover:bg-sky-50 transition-all"
+        style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif" }}
+      >
+        Login
+      </button>
+      <button
+        onClick={() => handleNavigate("user-signup")}
+        className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-sky-500 to-sky-600 text-white font-bold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+        style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif" }}
+      >
+        Sign Up
+      </button>
+      <button
+        onClick={() => handleNavigate("admin-login")}
+        className="text-sm text-gray-600 hover:text-sky-600 font-semibold transition-colors"
+        style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif" }}
+      >
+        Admin
+      </button>
+    </>
+  )}
+</div>
 
           {/* ===== MOBILE MENU BUTTON ===== */}
           <button
@@ -126,35 +163,44 @@ const Navbar = ({ currentPage, setCurrentPage }) => {
               );
             })}
 
-            {user ? (
-              <>
-                <button
-                  onClick={() => handleNavigate("admin-dashboard")}
-                  className="w-full text-left text-base font-semibold text-gray-700 hover:text-sky-600 transition-colors"
-                  style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif" }}
-                >
-                  Dashboard
-                </button>
-                <button
-                  onClick={() => {
-                    logout();
-                    setMobileMenu(false);
-                  }}
-                  className="w-full text-left text-base font-semibold text-red-600 hover:text-red-700 transition-colors"
-                  style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif" }}
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={() => handleNavigate("admin-login")}
-                className="w-full text-left text-base font-semibold text-sky-600 hover:text-sky-700 transition-colors"
-                style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif" }}
-              >
-                Admin Login
-              </button>
-            )}
+            {regularUser ? (
+  <>
+    <div className="w-full flex items-center gap-2 px-4 py-2 bg-sky-50 rounded-lg">
+      <div className="w-8 h-8 bg-gradient-to-br from-sky-500 to-sky-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+        {regularUser.name?.charAt(0).toUpperCase()}
+      </div>
+      <span className="text-sm font-semibold text-gray-700">{regularUser.name}</span>
+    </div>
+    <button
+      onClick={() => {
+        userLogout();
+        setMobileMenu(false);
+        handleNavigate("home");
+      }}
+      className="w-full text-left text-base font-semibold text-red-600 hover:text-red-700 transition-colors"
+      style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif" }}
+    >
+      Logout
+    </button>
+  </>
+) : (
+  <>
+    <button
+      onClick={() => handleNavigate("user-login")}
+      className="w-full text-left text-base font-semibold text-sky-600 hover:text-sky-700 transition-colors"
+      style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif" }}
+    >
+      Login
+    </button>
+    <button
+      onClick={() => handleNavigate("user-signup")}
+      className="w-full text-left text-base font-semibold text-sky-600 hover:text-sky-700 transition-colors"
+      style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif" }}
+    >
+      Sign Up
+    </button>
+  </>
+)}
           </div>
         </div>
       )}

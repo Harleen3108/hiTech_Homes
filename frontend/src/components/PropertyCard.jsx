@@ -1,4 +1,5 @@
 import { useState } from "react";
+import api from "../utils/api";
 import {
   MapPin,
   Bed,

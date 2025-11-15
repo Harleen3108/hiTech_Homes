@@ -1,18 +1,19 @@
 const path = require("path");
-require("dotenv").config(); // ✅ Correct for Render + local
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const errorHandler = require("./middleware/errorHandler");
 
-// Routes
+const analyticsRoutes = require("./routes/analyticsRoutes");
+const userRoutes = require("./routes/userRoutes");
 const propertyRoutes = require("./routes/propertyRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const enquiryRoutes = require("./routes/enquiryRoutes");
 const authRoutes = require("./routes/authRoutes");
+const chatbotRoutes = require("./routes/chatbotRoutes"); // ⭐ ADD THIS
 
-// Debug ENV load
 console.log("ENV LOADED:", {
   CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
@@ -20,30 +21,32 @@ console.log("ENV LOADED:", {
   CLIENT_URL: process.env.CLIENT_URL,
 });
 
-// Connect to DB
+// Connect to database
 connectDB();
 
-// Initialize Express
+// Initialize Express app
 const app = express();
 
-// CORS
+// Middleware
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: process.env.CLIENT_URL || "http://localhost:3001",
     credentials: true,
   })
 );
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use("/api/users", userRoutes);
 // API Routes
+app.use("/api/analytics", analyticsRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/properties", propertyRoutes);
 app.use("/api/enquiries", enquiryRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/chatbot", chatbotRoutes); // ⭐ ADD THIS
 
-// Health Check
+// Health check route
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     success: true,
@@ -52,7 +55,7 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// 404 Handler
+// 404 handler
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -60,15 +63,12 @@ app.use((req, res) => {
   });
 });
 
-// Error Handler
+// Error handling middleware (must be last)
 app.use(errorHandler);
 
-// Server Listen
+// Start server
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-  console.log(
-    `Server running in ${
-      process.env.NODE_ENV || "production"
-    } mode on port ${PORT}`
-  );
+  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });

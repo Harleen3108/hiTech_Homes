@@ -9,6 +9,8 @@ import AdminLogin from "../pages/AdminLogin";
 import AdminDashboard from "../pages/AdminDashboard";
 import AddProperty from "../pages/AddProperty";
 import AdminEnquiries from "../pages/AdminEnquiries";
+import Chatbot from "./components/Chatbot";
+import FloatingChatbot from "./components/FloatingChatbot";
 
 const AppRouter = () => {
   return (
@@ -22,6 +24,8 @@ const AppRouter = () => {
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/admin/add-property" element={<AddProperty />} />
       <Route path="/admin/enquiries" element={<AdminEnquiries />} />
+      <Route path="/chatbot" element={<Chatbot />} />
+      <FloatingChatbot />
     </Routes>
   );
 };

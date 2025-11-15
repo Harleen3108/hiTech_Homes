@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   MapPin,
   Bed,
@@ -27,7 +27,31 @@ const PropertyDetails = ({ property, setCurrentPage }) => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Update the handleSubmit function (around line 29)
+  // ✅ ANALYTICS: Track property view on page load
+  useEffect(() => {
+    if (property?._id) {
+      const trackView = async () => {
+        try {
+          // Get or create session ID
+          let sessionId = localStorage.getItem("sessionId");
+          if (!sessionId) {
+            sessionId = Date.now().toString() + Math.random().toString(36).substring(2);
+            localStorage.setItem("sessionId", sessionId);
+          }
+
+          await api.post("/analytics/view", {
+            propertyId: property._id,
+            sessionId: sessionId
+          });
+        } catch (error) {
+          console.error("Analytics tracking error:", error);
+        }
+      };
+      
+      trackView();
+    }
+  }, [property?._id]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);

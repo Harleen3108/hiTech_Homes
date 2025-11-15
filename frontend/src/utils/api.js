@@ -6,8 +6,16 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  // Check for admin token first
+  const adminToken = localStorage.getItem("token");
+  // Then check for user token
+  const userToken = localStorage.getItem("userToken");
+  
+  const token = adminToken || userToken;
+  
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   return config;
 });
 

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { PropertyContext } from "../context/PropertyContext";
 import Loader from "../components/Loader";
+import api from "../utils/api";
 
 const Listings = ({ setCurrentPage, setSelectedProperty }) => {
   const {
@@ -35,6 +36,59 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
     fetchProperties();
     setTimeout(() => setAnimateCards(true), 200);
   }, []);
+
+  // ✅ ANALYTICS: Track filter changes
+  useEffect(() => {
+    const trackFilters = async () => {
+      if (filters.location || filters.priceRange || filters.bhk) {
+        try {
+          let sessionId = localStorage.getItem("sessionId");
+          if (!sessionId) {
+            sessionId = Date.now().toString() + Math.random().toString(36).substring(2);
+            localStorage.setItem("sessionId", sessionId);
+          }
+
+          const priceMax = filters.priceRange ? 
+            parseInt(filters.priceRange.split("-")[1]) || null : null;
+
+          await api.post("/analytics/filter", {
+            city: filters.location || null,
+            priceRange: priceMax ? { max: priceMax } : null,
+            bhk: filters.bhk ? parseInt(filters.bhk) : null,
+            sessionId: sessionId
+          });
+        } catch (error) {
+          console.error("Analytics filter tracking error:", error);
+        }
+      }
+    };
+
+    // Debounce the tracking to avoid too many requests
+    const timeoutId = setTimeout(trackFilters, 500);
+    return () => clearTimeout(timeoutId);
+  }, [filters]);
+
+  // ✅ ANALYTICS: Track property click
+  const handlePropertyClick = async (property) => {
+    try {
+      let sessionId = localStorage.getItem("sessionId");
+      if (!sessionId) {
+        sessionId = Date.now().toString() + Math.random().toString(36).substring(2);
+        localStorage.setItem("sessionId", sessionId);
+      }
+
+      await api.post("/analytics/click", {
+        propertyId: property._id,
+        sessionId: sessionId
+      });
+    } catch (error) {
+      console.error("Analytics click tracking error:", error);
+    }
+
+    // Navigate to property details
+    setSelectedProperty(property);
+    setCurrentPage("property-details");
+  };
 
   // Get unique cities from properties
   const uniqueCities = [
@@ -118,7 +172,7 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-50 to-red-50">
+      <div className="min-h-screen flex items-center justify-center  bg-gradient-to-br from-sky-50 to-red-50">
         <div className="text-center p-8 bg-white rounded-2xl shadow-2xl max-w-md border-2 border-red-200">
           <div className="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
             <Home size={32} className="text-white" />
@@ -422,10 +476,7 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
             {displayedProperties.map((property, idx) => (
               <article
                 key={property._id}
-                onClick={() => {
-                  setSelectedProperty(property);
-                  setCurrentPage("property-details");
-                }}
+                onClick={() => handlePropertyClick(property)}
                 className={`group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border-2 border-transparent hover:border-sky-200 transition-all duration-500 transform hover:-translate-y-3 cursor-pointer ${
                   animateCards
                     ? "opacity-100 translate-y-0"
