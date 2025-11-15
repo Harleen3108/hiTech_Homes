@@ -346,3 +346,4 @@ const DashboardStats = ({ properties }) => {
 };
 
 export default DashboardStats;
+
