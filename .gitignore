@@ -6,8 +6,6 @@ yarn-error.log
 # Environment
 .env
 backend/.env
-frontend/.env
-
 # Build
 dist/
 build/
