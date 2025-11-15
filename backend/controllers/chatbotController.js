@@ -36,6 +36,13 @@ exports.handleChatMessage = async (req, res) => {
     );
     console.log("🤖 AI Response generated");
 
+    // Generate dynamic suggestions based on query
+    const suggestions = generateFollowUpSuggestions(
+      message,
+      properties,
+      alternatives
+    );
+
     res.status(200).json({
       success: true,
       reply: aiResponse,
@@ -45,6 +52,7 @@ exports.handleChatMessage = async (req, res) => {
           : alternatives.length > 0
           ? alternatives.slice(0, 3)
           : null,
+      suggestions: suggestions.length > 0 ? suggestions : null,
     });
   } catch (error) {
     console.error("❌ Chatbot error:", error);
@@ -52,10 +60,76 @@ exports.handleChatMessage = async (req, res) => {
       success: false,
       error: "Failed to process message",
       reply:
-        "I apologize, but I encountered an error. Please try again or contact our support team.",
+        "I apologize, but I encountered an error. Please try again or contact our support team at +91 98765 43210.",
     });
   }
 };
+
+/**
+ * Generate smart follow-up suggestions
+ */
+function generateFollowUpSuggestions(query, properties, alternatives) {
+  const suggestions = [];
+  const lowerQuery = query.toLowerCase();
+
+  // If properties found, suggest related searches
+  if (properties.length > 0) {
+    const firstProperty = properties[0];
+
+    // Suggest different BHK
+    if (firstProperty.bhk === 2) {
+      suggestions.push("Show me 3 BHK properties");
+    } else if (firstProperty.bhk === 3) {
+      suggestions.push("Show me 2 BHK properties");
+    }
+
+    // Suggest same city
+    if (firstProperty.city) {
+      suggestions.push(`More properties in ${firstProperty.city}`);
+    }
+
+    // Suggest price range
+    const price = firstProperty.price;
+    if (price < 5000000) {
+      suggestions.push("Properties under 50 lakh");
+    } else if (price >= 5000000 && price < 10000000) {
+      suggestions.push("Properties 50-100 lakh");
+    }
+  }
+  // If no properties, suggest adjusting criteria
+  else if (alternatives.length === 0) {
+    if (lowerQuery.includes("bhk")) {
+      suggestions.push("Show me all available properties");
+    }
+    if (lowerQuery.includes("lakh") || lowerQuery.includes("crore")) {
+      suggestions.push("What's your latest property?");
+    }
+    suggestions.push("Contact information");
+    suggestions.push("Schedule a property visit");
+  }
+  // If alternatives shown
+  else {
+    suggestions.push("Show me all available properties");
+    suggestions.push("Contact a dealer");
+    suggestions.push("What amenities are available?");
+  }
+
+  // Always offer these generic helpful options if space
+  if (suggestions.length < 3) {
+    const generic = [
+      "Contact information",
+      "Schedule a property visit",
+      "What amenities are available?",
+    ];
+    generic.forEach((s) => {
+      if (suggestions.length < 4 && !suggestions.includes(s)) {
+        suggestions.push(s);
+      }
+    });
+  }
+
+  return suggestions.slice(0, 4); // Return max 4 suggestions
+}
 
 /**
  * Search properties based on user query
@@ -119,11 +193,14 @@ async function searchProperties(query) {
     if (Object.keys(searchQuery).length === 0) {
       if (
         lowerQuery.includes("property") ||
+        lowerQuery.includes("properties") ||
         lowerQuery.includes("house") ||
         lowerQuery.includes("flat") ||
         lowerQuery.includes("apartment") ||
         lowerQuery.includes("show") ||
-        lowerQuery.includes("available")
+        lowerQuery.includes("available") ||
+        lowerQuery.includes("latest") ||
+        lowerQuery.includes("new")
       ) {
         return await Property.find().sort({ createdAt: -1 }).limit(5);
       }
@@ -238,7 +315,7 @@ async function generateAIResponse(
   try {
     // Check if API key exists
     if (!process.env.OPENAI_API_KEY) {
-      console.error("❌ OPENAI_API_KEY not found in environment");
+      console.warn("⚠️ OPENAI_API_KEY not found - using enhanced fallback");
       return generateFallbackResponse(userMessage, properties, alternatives);
     }
 
@@ -263,6 +340,13 @@ async function generateAIResponse(
 3. Provide detailed information about properties, pricing, locations, and amenities
 4. When no exact match found, politely inform user and suggest alternatives
 5. Be friendly, helpful, and always respond directly to what the user asks
+
+Company Information:
+- Name: Hi-Tech Homes
+- Phone: +91 98765 43210
+- Email: info@hitechhomes.com
+- Location: Mumbai, India
+- Specialization: Premium residential properties
 
 SEARCH STATUS: ${searchStatus}
 
@@ -324,7 +408,8 @@ ${
 
 IMPORTANT:
 - Politely apologize: "I'm sorry, we don't currently have properties matching your exact requirements."
-- Ask for their contact details: "However, I can notify you when matching properties become available!"
+- Suggest: Call +91 98765 43210 to discuss requirements
+- Offer to notify them when matching properties become available
 - Suggest they try: Different budget range, different BHK, different location
 - Offer to show them our latest properties
 - Be empathetic and helpful
@@ -337,8 +422,9 @@ CONVERSATION STYLE:
 - Answer questions directly and naturally
 - Use emojis occasionally: 🏠 🔑 💰 📍 ✨ 😊
 - When no match: be apologetic but helpful
-- Always end with a helpful follow-up question
-- Keep responses concise but informative (2-4 sentences for most answers)`,
+- Always end with a helpful follow-up question or offer
+- Keep responses concise but informative (2-4 sentences for most answers)
+- For contact queries, provide: Phone: +91 98765 43210, Email: info@hitechhomes.com`,
       },
     ];
 
@@ -359,7 +445,7 @@ CONVERSATION STYLE:
       content: userMessage,
     });
 
-    console.log("🔄 Calling OpenAI API...");
+    console.log("📤 Calling OpenAI API...");
 
     // Call OpenAI API
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -400,59 +486,110 @@ CONVERSATION STYLE:
 }
 
 /**
- * Fallback response when AI is unavailable
+ * Enhanced fallback response when AI is unavailable
  */
 function generateFallbackResponse(message, properties, alternatives) {
   const lowerMessage = message.toLowerCase();
 
   // Exact matches found
   if (properties.length > 0) {
-    return `Great news! I found ${
-      properties.length
-    } properties that match your requirements! 🎉\n\nThe top match is "${
-      properties[0].title
-    }" priced at ₹${properties[0].price.toLocaleString()} in ${
-      properties[0].city
-    }. It's a ${properties[0].bhk} BHK with ${
-      properties[0].bathrooms
-    } bathrooms.\n\nCheck out the property cards below for more details. Would you like to know more about any of these?`;
+    const p = properties[0];
+    return `Great news! I found ${properties.length} ${
+      properties.length === 1 ? "property" : "properties"
+    } that match your requirements! 🎉\n\n📍 Top match: "${
+      p.title
+    }"\n💰 Price: ₹${p.price.toLocaleString()}\n🏠 ${p.bhk} BHK, ${
+      p.bathrooms
+    } Bath\n📍 Location: ${
+      p.city
+    }\n\nCheck out the property cards below for full details! Would you like to know more about any of these properties? 😊`;
   }
 
   // No exact match but alternatives available
   if (alternatives.length > 0) {
+    const a = alternatives[0];
     return `I'm sorry, we don't have properties that exactly match your requirements right now. 😔\n\nHowever, I found ${
       alternatives.length
-    } similar properties you might like! The closest match is "${
-      alternatives[0].title
-    }" at ₹${alternatives[0].price.toLocaleString()} in ${
-      alternatives[0].city
-    }.\n\nWould you like to see these alternatives, or should I help you adjust your search criteria? 🏠`;
+    } similar ${
+      alternatives.length === 1 ? "property" : "properties"
+    } you might like!\n\n📍 Closest match: "${
+      a.title
+    }"\n💰 ₹${a.price.toLocaleString()}\n🏠 ${a.bhk} BHK in ${
+      a.city
+    }\n\nWould you like to see these alternatives, or should I help you adjust your search? 🏠`;
   }
 
-  // No results at all
+  // Specific keyword responses
+  if (
+    lowerMessage.includes("contact") ||
+    lowerMessage.includes("phone") ||
+    lowerMessage.includes("call") ||
+    lowerMessage.includes("dealer")
+  ) {
+    return `📞 Contact Hi-Tech Homes:\n\n• Phone: +91 98765 43210\n• Email: info@hitechhomes.com\n• Location: Mumbai, India\n\nOur team is ready to assist you! You can also click on any property to contact the dealer directly. How else can I help you? 😊`;
+  }
+
+  if (
+    lowerMessage.includes("amenities") ||
+    lowerMessage.includes("features") ||
+    lowerMessage.includes("facilities")
+  ) {
+    return `Our properties come with premium amenities:\n\n🅿️ Parking spaces\n🔒 24/7 Security\n🏋️ Gymnasium\n🏊 Swimming pool\n🌳 Landscaped gardens\n⚡ Power backup\n\nEach property has different amenities. Want to search for properties with specific features? 😊`;
+  }
+
+  if (
+    lowerMessage.includes("visit") ||
+    lowerMessage.includes("schedule") ||
+    lowerMessage.includes("viewing") ||
+    lowerMessage.includes("tour")
+  ) {
+    return `I'd love to help you schedule a property visit! 🏠\n\nPlease contact us:\n📱 Call: +91 98765 43210\n📧 Email: info@hitechhomes.com\n\nOr fill out the enquiry form on our Contact page. Our team will arrange a convenient time for you! What type of property are you interested in? 😊`;
+  }
+
+  if (
+    lowerMessage.includes("about") ||
+    lowerMessage.includes("who are you") ||
+    lowerMessage.includes("company")
+  ) {
+    return `Hi-Tech Homes - Your trusted real estate partner! 🏡\n\nWe specialize in:\n✅ Premium residential properties\n✅ Expert property consultation\n✅ Transparent dealings\n✅ Customer satisfaction\n\n📞 Contact: +91 98765 43210\n📧 Email: info@hitechhomes.com\n\nHow can I help you find your dream home today? 😊`;
+  }
+
+  if (
+    lowerMessage.includes("process") ||
+    lowerMessage.includes("how to buy") ||
+    lowerMessage.includes("procedure")
+  ) {
+    return `Our property buying process:\n\n1️⃣ Browse & shortlist properties\n2️⃣ Contact our dealer\n3️⃣ Schedule property visit\n4️⃣ Document verification\n5️⃣ Finalize the deal\n\nOur expert team guides you through each step! 📞 Call +91 98765 43210 for personalized assistance. What type of property interests you? 😊`;
+  }
+
+  // No results - property search related
   if (
     lowerMessage.includes("bhk") ||
     lowerMessage.includes("lakh") ||
-    lowerMessage.includes("crore")
+    lowerMessage.includes("crore") ||
+    lowerMessage.includes("property") ||
+    lowerMessage.includes("flat")
   ) {
-    return `I apologize, but we don't currently have properties matching your specific requirements. 😔\n\nWould you like to:\n• Adjust your budget range? 💰\n• Try a different BHK configuration? 🏠\n• Explore different locations? 📍\n• See our latest properties?\n\nI can also notify you when matching properties become available! Just let me know your contact details. 📧`;
+    return `I apologize, but we don't currently have properties matching your specific requirements. 😔\n\nLet me help you find alternatives:\n• Adjust your budget range? 💰\n• Try different BHK? 🏠\n• Explore other locations? 📍\n• See our latest properties?\n\n📞 Call us at +91 98765 43210 and we'll find the perfect match for you! What would you prefer? 😊`;
   }
 
-  // Specific responses based on keywords
-  if (lowerMessage.includes("contact") || lowerMessage.includes("dealer")) {
-    return "To contact a dealer, click on any property listing and you'll find contact options (call, WhatsApp, email). Our dealers are available to answer all your questions! 📞";
+  // Greetings
+  if (
+    lowerMessage.includes("hello") ||
+    lowerMessage.includes("hi") ||
+    lowerMessage.includes("hey") ||
+    lowerMessage === "hi"
+  ) {
+    return "Hello! 👋 Welcome to Hi-Tech Homes! I'm here to help you find your dream property. What are you looking for today? 🏠";
   }
 
-  if (lowerMessage.includes("amenities") || lowerMessage.includes("features")) {
-    return "Our properties offer amenities like:\n🅿️ Parking\n🔒 Security\n🏋️ Gym\n🏊 Swimming pool\n🌳 Garden\n⚡ Power backup\n\nEach property has different amenities. Want to search for properties with specific features?";
-  }
-
-  if (lowerMessage.includes("process") || lowerMessage.includes("how to")) {
-    return "Our property process:\n1️⃣ Browse & shortlist properties\n2️⃣ Contact dealer\n3️⃣ Schedule visit\n4️⃣ Verify documents\n5️⃣ Finalize deal\n\nOur dealers guide you through each step! Need help finding properties? 🏠";
+  // Thanks
+  if (lowerMessage.includes("thank") || lowerMessage.includes("thanks")) {
+    return "You're very welcome! 😊 If you have any more questions about properties, feel free to ask. Happy house hunting! 🏠✨";
   }
 
   // Default helpful response
-  return "I'm here to help you find your perfect property! 🏠\n\nTry asking:\n• 'Show me 2 BHK under 50 lakh'\n• 'Properties in Mumbai'\n• 'What amenities do you offer?'\n• 'How to contact dealers?'\n\nWhat can I help you with? 😊";
+  return `I'm here to help you find your perfect property! 🏠\n\nYou can ask me:\n• "Show me 2 BHK under 50 lakh"\n• "Properties in Mumbai"\n• "What amenities are available?"\n• "Contact information"\n• "Schedule a property visit"\n\n📞 Or call us: +91 98765 43210\n\nWhat can I help you with? 😊`;
 }
 
 module.exports = exports;

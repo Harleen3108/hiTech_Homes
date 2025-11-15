@@ -13,6 +13,7 @@ const adminRoutes = require("./routes/adminRoutes");
 const enquiryRoutes = require("./routes/enquiryRoutes");
 const authRoutes = require("./routes/authRoutes");
 const chatbotRoutes = require("./routes/chatbotRoutes"); // ⭐ ADD THIS
+const dashboardRoutes = require("./routes/dashboardroutes");
 
 console.log("ENV LOADED:", {
   CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
@@ -45,7 +46,7 @@ app.use("/api/properties", propertyRoutes);
 app.use("/api/enquiries", enquiryRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/chatbot", chatbotRoutes); // ⭐ ADD THIS
-
+app.use("/api/dashboard", dashboardRoutes);
 // Health check route
 app.get("/api/health", (req, res) => {
   res.status(200).json({

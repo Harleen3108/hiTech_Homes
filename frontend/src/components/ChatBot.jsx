@@ -7,19 +7,13 @@ const ChatBot = () => {
   const [messages, setMessages] = useState([
     {
       type: "bot",
-      text: "Hello! 👋 I'm your property assistant. I can help you find properties, answer questions about listings, or guide you through our website. How can I assist you today?",
+      text: "Hello! 👋 I'm your Hi-Tech Homes assistant. I can help you:\n\n🏠 Find properties by BHK, budget, or location\n💰 Check pricing and availability\n📍 Get area information\n📞 Connect with our team\n\nWhat would you like to know?",
       timestamp: new Date(),
     },
   ]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
-
-  // Drag states
-  const [isDragging, setIsDragging] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const dragStart = useRef({ x: 0, y: 0 });
-  const containerRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -28,82 +22,6 @@ const ChatBot = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  // Drag Start
-  const onDragStart = (e) => {
-    // Only drag from header, not from other elements
-    const clickedElement = e.target;
-
-    // Don't drag if clicking on buttons or interactive elements
-    if (
-      clickedElement.tagName === "BUTTON" ||
-      clickedElement.tagName === "TEXTAREA" ||
-      clickedElement.tagName === "INPUT" ||
-      clickedElement.closest(".chatbot-close") ||
-      clickedElement.closest(".chatbot-messages")
-    ) {
-      return;
-    }
-
-    // Only allow dragging from header area
-    if (!clickedElement.closest(".chatbot-header")) {
-      return;
-    }
-
-    e.preventDefault();
-    setIsDragging(true);
-
-    const clientX = e.type === "touchstart" ? e.touches[0].clientX : e.clientX;
-    const clientY = e.type === "touchstart" ? e.touches[0].clientY : e.clientY;
-
-    dragStart.current = {
-      x: clientX - position.x,
-      y: clientY - position.y,
-    };
-  };
-
-  // Drag Move
-  const onDragMove = (e) => {
-    if (!isDragging) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    const clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
-    const clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
-
-    const newX = clientX - dragStart.current.x;
-    const newY = clientY - dragStart.current.y;
-
-    setPosition({ x: newX, y: newY });
-  };
-
-  // Drag End
-  const onDragEnd = () => {
-    setIsDragging(false);
-  };
-
-  // Mouse events
-  useEffect(() => {
-    if (!isDragging) return;
-
-    const handleMouseMove = (e) => onDragMove(e);
-    const handleMouseUp = () => onDragEnd();
-    const handleTouchMove = (e) => onDragMove(e);
-    const handleTouchEnd = () => onDragEnd();
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-    document.addEventListener("touchmove", handleTouchMove, { passive: false });
-    document.addEventListener("touchend", handleTouchEnd);
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-      document.removeEventListener("touchmove", handleTouchMove);
-      document.removeEventListener("touchend", handleTouchEnd);
-    };
-  }, [isDragging]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -115,12 +33,13 @@ const ChatBot = () => {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+    const userInput = input;
     setInput("");
     setIsTyping(true);
 
     try {
       const response = await api.post("/chatbot/message", {
-        message: input,
+        message: userInput,
         conversationHistory: messages.slice(-6),
       });
 
@@ -128,21 +47,114 @@ const ChatBot = () => {
         type: "bot",
         text: response.data.reply,
         properties: response.data.properties || null,
+        suggestions: response.data.suggestions || null,
         timestamp: new Date(),
       };
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error("Chatbot error:", error);
+
+      // Fallback intelligent responses when backend fails
+      const fallbackResponse = getFallbackResponse(userInput.toLowerCase());
+
       const errorMessage = {
         type: "bot",
-        text: "I apologize, but I'm having trouble connecting right now. Please try again or contact us directly.",
+        text: fallbackResponse,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsTyping(false);
     }
+  };
+
+  // Fallback intelligent responses when backend is unavailable
+  const getFallbackResponse = (input) => {
+    // Property search queries
+    if (input.includes("2 bhk") || input.includes("2bhk")) {
+      return "I can help you find 2 BHK properties! Currently, we have several options available. Please visit our Listings page or contact us at +91 98765 43210 for detailed information about available 2 BHK properties.";
+    }
+    if (input.includes("3 bhk") || input.includes("3bhk")) {
+      return "We have excellent 3 BHK properties! Check out our Listings page or call us at +91 98765 43210 to discuss your requirements.";
+    }
+
+    // Budget queries
+    if (
+      input.includes("price") ||
+      input.includes("budget") ||
+      input.includes("cost") ||
+      input.includes("lakh") ||
+      input.includes("crore")
+    ) {
+      return "Our properties range from affordable to premium segments. For specific pricing and budget options, please:\n\n📱 Call: +91 98765 43210\n📧 Email: info@hitechhomes.com\n🌐 Visit our Listings page\n\nOur team will help you find properties within your budget!";
+    }
+
+    // Location queries
+    if (
+      input.includes("location") ||
+      input.includes("area") ||
+      input.includes("where") ||
+      input.includes("city")
+    ) {
+      return "We have properties across prime locations! To explore properties in specific areas, please:\n\n✅ Check our Listings page\n✅ Contact us: +91 98765 43210\n✅ Visit our office\n\nOur team can show you properties in your preferred locations.";
+    }
+
+    // Contact queries
+    if (
+      input.includes("contact") ||
+      input.includes("call") ||
+      input.includes("phone") ||
+      input.includes("email")
+    ) {
+      return "📞 Contact Hi-Tech Homes:\n\n• Phone: +91 98765 43210\n• Email: info@hitechhomes.com\n• Address: Mumbai, India\n\nYou can also fill out the contact form on our Contact page, and we'll reach out to you shortly!";
+    }
+
+    // Amenities
+    if (
+      input.includes("amenity") ||
+      input.includes("amenities") ||
+      input.includes("facilities") ||
+      input.includes("features")
+    ) {
+      return "Our properties come with premium amenities:\n\n✨ Modern design & architecture\n🏊 Swimming pools & gym\n🌳 Landscaped gardens\n🔒 24/7 security\n🚗 Ample parking\n⚡ Power backup\n\nFor specific property amenities, check our Listings page or contact us!";
+    }
+
+    // Visit/schedule
+    if (
+      input.includes("visit") ||
+      input.includes("schedule") ||
+      input.includes("viewing") ||
+      input.includes("see property")
+    ) {
+      return "I'd be happy to help you schedule a property visit! 🏠\n\nPlease contact us to arrange a viewing:\n📱 Call: +91 98765 43210\n📧 Email: info@hitechhomes.com\n\nOr fill out the enquiry form on our Contact page, and our team will reach out to schedule a convenient time for you!";
+    }
+
+    // About company
+    if (
+      input.includes("about") ||
+      input.includes("who are you") ||
+      input.includes("company")
+    ) {
+      return "Hi-Tech Homes is your trusted real estate partner! 🏡\n\nWe specialize in:\n✅ Premium residential properties\n✅ Expert property consultation\n✅ Transparent dealings\n✅ Customer satisfaction\n\nVisit our About page to learn more about us, or contact us at +91 98765 43210!";
+    }
+
+    // Greetings
+    if (
+      input.includes("hello") ||
+      input.includes("hi") ||
+      input.includes("hey")
+    ) {
+      return "Hello! 👋 How can I assist you today? I can help you find properties, answer questions about pricing, or connect you with our team!";
+    }
+
+    // Thanks
+    if (input.includes("thank") || input.includes("thanks")) {
+      return "You're welcome! 😊 If you have any more questions, feel free to ask. Happy house hunting! 🏠";
+    }
+
+    // Default fallback
+    return "I'm here to help! For detailed information about our properties, pricing, and availability, please:\n\n📱 Call us: +91 98765 43210\n📧 Email: info@hitechhomes.com\n🌐 Visit our Listings page\n\nOur team is ready to assist you with all your property needs!";
   };
 
   const handleKeyPress = (e) => {
@@ -155,8 +167,10 @@ const ChatBot = () => {
   const quickActions = [
     "Show me 2 BHK properties",
     "Properties under 50 lakh",
-    "What amenities do you offer?",
-    "How to contact a dealer?",
+    "What amenities are available?",
+    "Schedule a property visit",
+    "Contact information",
+    "About Hi-Tech Homes",
   ];
 
   const handleQuickAction = (action) => {
@@ -177,7 +191,7 @@ const ChatBot = () => {
           viewBox="0 0 24 24"
           strokeWidth={2}
           stroke="currentColor"
-          style={{ width: "24px", height: "24px" }}
+          className="w-6 h-6"
         >
           <path
             strokeLinecap="round"
@@ -189,25 +203,10 @@ const ChatBot = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div
-          ref={containerRef}
-          className={`chatbot-container ${isDragging ? "dragging" : ""}`}
-          style={{
-            transform: `translate(${position.x}px, ${position.y}px)`,
-            transition: isDragging ? "none" : "all 0.3s ease",
-          }}
-        >
-          {/* Header - Draggable */}
-          <div
-            className="chatbot-header"
-            onMouseDown={onDragStart}
-            onTouchStart={onDragStart}
-            style={{
-              cursor: isDragging ? "grabbing" : "grab",
-              userSelect: "none",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <div className="chatbot-container">
+          {/* Header */}
+          <div className="chatbot-header">
+            <div className="flex items-center gap-3">
               <div className="chatbot-avatar">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -224,7 +223,7 @@ const ChatBot = () => {
                 </svg>
               </div>
               <div>
-                <h3 className="chatbot-title">Property Assistant</h3>
+                <h3 className="chatbot-title">Hi-Tech Homes Assistant</h3>
                 <p className="chatbot-subtitle">Online • Ready to help</p>
               </div>
             </div>
@@ -254,7 +253,7 @@ const ChatBot = () => {
             {messages.map((message, index) => (
               <div key={index} className={`message ${message.type}`}>
                 <div className="message-content">
-                  <p>{message.text}</p>
+                  <p style={{ whiteSpace: "pre-line" }}>{message.text}</p>
 
                   {/* Property Cards if available */}
                   {message.properties && message.properties.length > 0 && (
@@ -276,6 +275,21 @@ const ChatBot = () => {
                             </p>
                           </div>
                         </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Suggestions if available */}
+                  {message.suggestions && message.suggestions.length > 0 && (
+                    <div className="message-suggestions">
+                      {message.suggestions.map((suggestion, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setInput(suggestion)}
+                          className="suggestion-btn"
+                        >
+                          {suggestion}
+                        </button>
                       ))}
                     </div>
                   )}
@@ -306,7 +320,7 @@ const ChatBot = () => {
           </div>
 
           {/* Quick Actions */}
-          {messages.length === 1 && (
+          {messages.length <= 2 && (
             <div className="quick-actions">
               {quickActions.map((action, index) => (
                 <button

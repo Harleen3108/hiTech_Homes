@@ -9,14 +9,12 @@ import Listings from "./pages/Listings";
 import PropertyDetails from "./pages/PropertyDetails";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import AdminLogin from "./pages/AdminLogin";
+// import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AddProperty from "./pages/AddProperty";
 import AdminEnquiries from "./pages/AdminEnquiries";
-import ChatBot from "./components/ChatBot"; // ✅ Already added!
+import ChatBot from "./components/ChatBot";
 import { UserAuthProvider } from "./context/UserAuthContext";
-import UserLogin from "./pages/UserLogin";
-import UserSignup from "./pages/UserSignup";
 import "./styles/index.css";
 import AdminAnalytics from "./pages/AdminAnalytics";
 
@@ -47,8 +45,13 @@ function App() {
             setCurrentPage={setCurrentPage}
           />
         );
-        case "admin-analytics":
-  return <AdminAnalytics currentPage={currentPage} setCurrentPage={setCurrentPage} />;
+      case "admin-analytics":
+        return (
+          <AdminAnalytics
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        );
       case "about":
         return <About setCurrentPage={setCurrentPage} />;
       case "contact":
@@ -61,10 +64,6 @@ function App() {
         return <AddProperty setCurrentPage={setCurrentPage} />;
       case "admin-enquiries":
         return <AdminEnquiries setCurrentPage={setCurrentPage} />;
-      case "user-login":
-  return <UserLogin setCurrentPage={setCurrentPage} />;
-case "user-signup":
-  return <UserSignup setCurrentPage={setCurrentPage} />;
       default:
         return (
           <Home
@@ -91,21 +90,21 @@ case "user-signup":
   return (
     <AuthProvider>
       <UserAuthProvider>
-      <PropertyProvider>
-        <EnquiryProvider>
-          <div className="min-h-screen bg-gray-50">
-            {showNavbar && (
-              <Navbar
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-              />
-            )}
-            {renderPage()}
-            {showFooter && <Footer setCurrentPage={setCurrentPage} />}
-            <ChatBot /> {/* ⭐ ADD THIS LINE - ChatBot appears on all pages */}
-          </div>
-        </EnquiryProvider>
-      </PropertyProvider>
+        <PropertyProvider>
+          <EnquiryProvider>
+            <div className="min-h-screen bg-gray-50">
+              {showNavbar && (
+                <Navbar
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                />
+              )}
+              {renderPage()}
+              {showFooter && <Footer setCurrentPage={setCurrentPage} />}
+              <ChatBot />
+            </div>
+          </EnquiryProvider>
+        </PropertyProvider>
       </UserAuthProvider>
     </AuthProvider>
   );
