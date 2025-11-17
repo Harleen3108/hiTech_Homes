@@ -28,18 +28,45 @@ connectDB();
 // Initialize Express app
 const app = express();
 
-// Middleware
+// CORS Configuration - UPDATED
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3001",
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "https://hi-tech-homes.vercel.app",
+      process.env.CLIENT_URL,
+    ].filter(Boolean),
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health check route (put this FIRST)
+// Root route
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "Hi-Tech Homes API",
+    version: "1.0.0",
+    endpoints: {
+      health: "/api/health",
+      properties: "/api/properties",
+      auth: "/api/auth",
+      users: "/api/users",
+      enquiries: "/api/enquiries",
+      admin: "/api/admin",
+      analytics: "/api/analytics",
+      chatbot: "/api/chatbot",
+      dashboard: "/api/dashboard",
+    },
+  });
+});
+
+// Health check route
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     success: true,
@@ -63,7 +90,7 @@ app.use((req, res) => {
   res.status(404).json({
     success: false,
     message: "Route not found",
-    path: req.originalUrl  // This helps debug which route is failing
+    path: req.originalUrl,
   });
 });
 
@@ -72,7 +99,7 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({
     success: false,
-    message: err.message || "Internal Server Error"
+    message: err.message || "Internal Server Error",
   });
 });
 
