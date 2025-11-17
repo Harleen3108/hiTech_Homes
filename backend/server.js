@@ -12,7 +12,7 @@ const propertyRoutes = require("./routes/propertyRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const enquiryRoutes = require("./routes/enquiryRoutes");
 const authRoutes = require("./routes/authRoutes");
-const chatbotRoutes = require("./routes/chatbotRoutes"); // ⭐ ADD THIS
+const chatbotRoutes = require("./routes/chatbotRoutes");
 const dashboardRoutes = require("./routes/dashboardroutes");
 
 console.log("ENV LOADED:", {
@@ -38,16 +38,8 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/api/users", userRoutes);
-// API Routes
-app.use("/api/analytics", analyticsRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api/properties", propertyRoutes);
-app.use("/api/enquiries", enquiryRoutes);
-app.use("/api/auth", authRoutes);
-app.use("/api/chatbot", chatbotRoutes); // ⭐ ADD THIS
-app.use("/api/dashboard", dashboardRoutes);
-// Health check route
+
+// Health check route (put this FIRST)
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     success: true,
@@ -56,16 +48,33 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// 404 handler
+// API Routes
+app.use("/api/users", userRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/properties", propertyRoutes);
+app.use("/api/enquiries", enquiryRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/chatbot", chatbotRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+
+// 404 handler (must be AFTER all routes)
 app.use((req, res) => {
   res.status(404).json({
     success: false,
     message: "Route not found",
+    path: req.originalUrl  // This helps debug which route is failing
   });
 });
 
-// Error handling middleware (must be last)
-app.use(errorHandler);
+// Error handling middleware (must be last with 4 parameters)
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error"
+  });
+});
 
 // Start server
 const PORT = process.env.PORT || 5000;
