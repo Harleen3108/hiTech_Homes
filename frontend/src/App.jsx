@@ -55,17 +55,17 @@ function App() {
         );
       case "about":
         return <About setCurrentPage={setCurrentPage} />;
-case "contact":
-  return <Contact />;
-case "privacy-policy":
-  return <PrivacyPolicy setCurrentPage={setCurrentPage} />;
-case "terms-conditions":
-  return <TermsConditions setCurrentPage={setCurrentPage} />;
-case "admin-login":
-case "add-property":
-  return <AddProperty setCurrentPage={setCurrentPage} />;
-case "admin-enquiries":
-  return <AdminEnquiries setCurrentPage={setCurrentPage} />;
+      case "contact":
+        return <Contact />;
+      case "privacy-policy":
+        return <PrivacyPolicy setCurrentPage={setCurrentPage} />;
+      case "terms-conditions":
+        return <TermsConditions setCurrentPage={setCurrentPage} />;
+      case "admin-login":
+      case "add-property":
+        return <AddProperty setCurrentPage={setCurrentPage} />;
+      case "admin-enquiries":
+        return <AdminEnquiries setCurrentPage={setCurrentPage} />;
       default:
         return (
           <Home
