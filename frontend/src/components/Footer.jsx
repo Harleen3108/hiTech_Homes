@@ -1,12 +1,7 @@
 import {
   Facebook,
   Instagram,
-<<<<<<< HEAD
   Twitter,
-=======
-  Linkedin,
-  X,
->>>>>>> b59941d1fcdccf08f9ddc06fdfac7b9378f8215e
   MapPin,
   Phone,
   Mail,
@@ -102,17 +97,12 @@ export default function Footer({ setCurrentPage }) {
           </ul>
         </div>
 
-<<<<<<< HEAD
         {/* ===== LEGAL & SOCIAL ===== */}
-=======
-        {/* ===== SOCIAL MEDIA ===== */}
->>>>>>> b59941d1fcdccf08f9ddc06fdfac7b9378f8215e
         <div>
           <h3
             className="text-lg font-semibold text-gray-900 mb-4"
             style={{ fontFamily: "'Poppins', sans-serif" }}
           >
-<<<<<<< HEAD
             Legal
           </h3>
           <ul
@@ -152,36 +142,17 @@ export default function Footer({ setCurrentPage }) {
               <a
                 key={idx}
                 href={link}
-=======
-            Connect With Us
-          </h3>
-          <div className="flex space-x-4">
-            {[Facebook, Instagram, X].map((Icon, idx) => (
-              <a
-                key={idx}
-                href="#"
->>>>>>> b59941d1fcdccf08f9ddc06fdfac7b9378f8215e
                 className="p-2.5 rounded-full border border-gray-300 hover:bg-blue-600 hover:text-white transition-all duration-300"
               >
                 <Icon size={18} />
               </a>
             ))}
           </div>
-<<<<<<< HEAD
-=======
-          <p
-            className="text-gray-500 text-sm mt-6 leading-relaxed"
-            style={{ fontFamily: "'Inter', sans-serif" }}
-          >
-            Stay connected for new listings, offers, and real estate updates.
-          </p>
->>>>>>> b59941d1fcdccf08f9ddc06fdfac7b9378f8215e
         </div>
       </div>
 
       {/* ===== DIVIDER / COPYRIGHT ===== */}
       <div
-<<<<<<< HEAD
         className="border-t border-gray-300 mt-12 pt-6 text-center"
         style={{ fontFamily: "'Inter', sans-serif" }}
       >
@@ -196,14 +167,6 @@ export default function Footer({ setCurrentPage }) {
           Powered by{" "}
           <span className="font-medium text-gray-700">Hi-Tech Homes</span>
         </p>
-=======
-        className="border-t border-gray-300 mt-12 pt-6 text-center text-sm text-gray-500"
-        style={{ fontFamily: "'Inter', sans-serif" }}
-      >
-        © {currentYear}{" "}
-        <span className="font-medium text-gray-700">Hi-Tech Homes</span>. All
-        rights reserved.
->>>>>>> b59941d1fcdccf08f9ddc06fdfac7b9378f8215e
       </div>
     </footer>
   );

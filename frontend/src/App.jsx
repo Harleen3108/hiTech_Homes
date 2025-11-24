@@ -16,11 +16,8 @@ import ChatBot from "./components/ChatBot";
 import { UserAuthProvider } from "./context/UserAuthContext";
 import "./styles/index.css";
 import AdminAnalytics from "./pages/AdminAnalytics";
-<<<<<<< HEAD
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
-=======
->>>>>>> b59941d1fcdccf08f9ddc06fdfac7b9378f8215e
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -58,23 +55,17 @@ function App() {
         );
       case "about":
         return <About setCurrentPage={setCurrentPage} />;
-      case "contact":
-        return <Contact />;
-<<<<<<< HEAD
-      case "privacy-policy":
-        return <PrivacyPolicy setCurrentPage={setCurrentPage} />;
-      case "terms-conditions":
-        return <TermsConditions setCurrentPage={setCurrentPage} />;
-=======
->>>>>>> b59941d1fcdccf08f9ddc06fdfac7b9378f8215e
-      case "admin-login":
-        return <AdminLogin setCurrentPage={setCurrentPage} />;
-      case "admin-dashboard":
-        return <AdminDashboard setCurrentPage={setCurrentPage} />;
-      case "add-property":
-        return <AddProperty setCurrentPage={setCurrentPage} />;
-      case "admin-enquiries":
-        return <AdminEnquiries setCurrentPage={setCurrentPage} />;
+case "contact":
+  return <Contact />;
+case "privacy-policy":
+  return <PrivacyPolicy setCurrentPage={setCurrentPage} />;
+case "terms-conditions":
+  return <TermsConditions setCurrentPage={setCurrentPage} />;
+case "admin-login":
+case "add-property":
+  return <AddProperty setCurrentPage={setCurrentPage} />;
+case "admin-enquiries":
+  return <AdminEnquiries setCurrentPage={setCurrentPage} />;
       default:
         return (
           <Home
