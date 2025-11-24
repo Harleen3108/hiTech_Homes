@@ -62,6 +62,9 @@ function App() {
       case "terms-conditions":
         return <TermsConditions setCurrentPage={setCurrentPage} />;
       case "admin-login":
+        return <AdminLogin setCurrentPage={setCurrentPage} />;
+      case "admin-dashboard":
+        return <AdminDashboard setCurrentPage={setCurrentPage} />;
       case "add-property":
         return <AddProperty setCurrentPage={setCurrentPage} />;
       case "admin-enquiries":
