@@ -9,6 +9,7 @@ import {
   Home,
   Sparkles,
   X,
+  ChevronRight,
 } from "lucide-react";
 import { PropertyContext } from "../context/PropertyContext";
 import Loader from "../components/Loader";
@@ -44,18 +45,20 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
         try {
           let sessionId = localStorage.getItem("sessionId");
           if (!sessionId) {
-            sessionId = Date.now().toString() + Math.random().toString(36).substring(2);
+            sessionId =
+              Date.now().toString() + Math.random().toString(36).substring(2);
             localStorage.setItem("sessionId", sessionId);
           }
 
-          const priceMax = filters.priceRange ? 
-            parseInt(filters.priceRange.split("-")[1]) || null : null;
+          const priceMax = filters.priceRange
+            ? parseInt(filters.priceRange.split("-")[1]) || null
+            : null;
 
           await api.post("/analytics/filter", {
             city: filters.location || null,
             priceRange: priceMax ? { max: priceMax } : null,
             bhk: filters.bhk ? parseInt(filters.bhk) : null,
-            sessionId: sessionId
+            sessionId: sessionId,
           });
         } catch (error) {
           console.error("Analytics filter tracking error:", error);
@@ -73,13 +76,14 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
     try {
       let sessionId = localStorage.getItem("sessionId");
       if (!sessionId) {
-        sessionId = Date.now().toString() + Math.random().toString(36).substring(2);
+        sessionId =
+          Date.now().toString() + Math.random().toString(36).substring(2);
         localStorage.setItem("sessionId", sessionId);
       }
 
       await api.post("/analytics/click", {
         propertyId: property._id,
-        sessionId: sessionId
+        sessionId: sessionId,
       });
     } catch (error) {
       console.error("Analytics click tracking error:", error);
@@ -172,13 +176,13 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center  bg-gradient-to-br from-sky-50 to-red-50">
-        <div className="text-center p-8 bg-white rounded-2xl shadow-2xl max-w-md border-2 border-red-200">
-          <div className="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+        <div className="text-center p-8 bg-white rounded-2xl shadow-2xl max-w-md border-2 border-rose-200">
+          <div className="w-16 h-16 bg-gradient-to-br from-rose-400 to-rose-600 rounded-full flex items-center justify-center mx-auto mb-4">
             <Home size={32} className="text-white" />
           </div>
           <h2
-            className="text-2xl font-bold text-red-600 mb-3"
+            className="text-2xl font-bold text-rose-600 mb-3"
             style={{ fontFamily: "'Poppins', sans-serif" }}
           >
             Error Loading Properties
@@ -191,7 +195,7 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
           </p>
           <button
             onClick={fetchProperties}
-            className="px-6 py-3 bg-gradient-to-r from-sky-500 to-sky-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
+            className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white font-semibold rounded-full hover:shadow-lg hover:scale-105 transition-all"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
             Retry
@@ -202,33 +206,52 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
   }
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }}>
+    <div
+      className="bg-gradient-to-b from-indigo-50 via-white to-purple-50 min-h-screen"
+      style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif" }}
+    >
       {/* ===== HEADER ===== */}
-      <section className="relative py-24 overflow-hidden bg-gradient-to-br from-sky-500 via-sky-600 to-red-600">
-        {/* Animated Background Shapes */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 py-12 md:py-0">
+        {/* Background Image Slideshow */}
+        {[
+          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920",
+          "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920",
+          "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1920",
+        ].map((img, idx) => (
           <div
-            className="absolute bottom-0 right-0 w-96 h-96 bg-red-400/20 rounded-full blur-3xl animate-pulse"
-            style={{ animationDelay: "1s" }}
-          ></div>
-          <div
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-sky-300/20 rounded-full blur-2xl animate-pulse"
-            style={{ animationDelay: "0.5s" }}
-          ></div>
-        </div>
-
-        {/* Geometric Pattern Overlay */}
-        <div className="absolute inset-0 opacity-10">
-          <div
-            className="absolute inset-0"
+            key={idx}
+            className={`absolute inset-0 transition-opacity duration-[2000ms] ease-in-out ${
+              idx === 0 ? "opacity-100" : "opacity-0"
+            }`}
             style={{
-              backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px)`,
+              backgroundImage: `url(${img})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              filter: "brightness(0.5) saturate(1.1)",
             }}
           ></div>
+        ))}
+
+        {/* Gradient Overlay - Indigo to Rose */}
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/30 via-purple-500/25 to-rose-500/30"></div>
+
+        {/* Animated Particles */}
+        <div className="absolute inset-0 overflow-hidden">
+          {[...Array(15)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-2 h-2 bg-white/30 rounded-full animate-pulse"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${2 + Math.random() * 3}s`,
+              }}
+            ></div>
+          ))}
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto text-center px-6">
+        <div className="relative z-10 max-w-7xl mx-auto text-center text-white">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full mb-4">
             <Sparkles size={18} className="text-yellow-300" />
             <span
@@ -239,16 +262,17 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
             </span>
           </div>
           <h1
-            className="text-5xl md:text-6xl font-extrabold text-white mb-4 drop-shadow-2xl"
+            className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4 drop-shadow-2xl leading-tight"
             style={{ fontFamily: "'Poppins', sans-serif" }}
           >
-            Discover Your <span className="text-red-200">Dream Property</span>
+            Discover Your <span className="text-rose-200">Dream Property</span>
           </h1>
           <p
-            className="text-lg text-white/95 mb-6 max-w-2xl mx-auto"
+            className="text-lg text-white/95 mb-6 max-w-2xl mx-auto leading-relaxed"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
-            Browse through our exclusive collection of premium homes.
+            Browse through our exclusive collection of premium homes that
+            redefine luxury living
           </p>
           <div
             className="flex justify-center gap-2 text-white/90 text-sm"
@@ -267,7 +291,7 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
       </section>
 
       {/* ===== FILTER BAR ===== */}
-      <section className="sticky top-20 z-40 bg-white/95 backdrop-blur-md border-b-2 border-sky-100 py-5 shadow-md">
+      <section className="sticky top-20 z-40 bg-white/95 backdrop-blur-md border-b-2 border-indigo-100 py-5 shadow-lg">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center gap-3 flex-wrap">
             <div className="relative flex-1 min-w-[250px] max-w-[500px]">
@@ -276,23 +300,23 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
                 placeholder="Search properties..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-11 pr-4 py-3 border-2 border-sky-200 rounded-xl text-sm bg-sky-50/50 focus:bg-white focus:border-sky-500 focus:outline-none focus:ring-4 focus:ring-sky-100 transition-all"
+                className="w-full pl-11 pr-4 py-3 border-2 border-indigo-200 rounded-xl text-sm bg-indigo-50/50 focus:bg-white focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all"
                 style={{ fontFamily: "'Inter', sans-serif" }}
               />
               <Search
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sky-400"
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-indigo-400"
                 size={18}
               />
             </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-5 py-3 border-2 border-sky-200 rounded-xl bg-gradient-to-r from-sky-50 to-red-50 text-gray-700 font-semibold text-sm hover:from-sky-100 hover:to-red-100 hover:border-sky-400 transition-all relative"
+              className="flex items-center gap-2 px-5 py-3 border-2 border-indigo-200 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 text-gray-700 font-semibold text-sm hover:from-indigo-100 hover:to-purple-100 hover:border-indigo-400 transition-all relative group"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              <SlidersHorizontal size={18} className="text-sky-600" />
+              <SlidersHorizontal size={18} className="text-indigo-600" />
               Filters
               {activeFilterCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                <span className="absolute -top-2 -right-2 bg-rose-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                   {activeFilterCount}
                 </span>
               )}
@@ -301,7 +325,7 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
 
           {/* Filter Dropdown */}
           {showFilters && (
-            <div className="mt-4 p-6 bg-white rounded-xl border-2 border-sky-200 shadow-xl animate-fade-in">
+            <div className="mt-4 p-6 bg-white rounded-2xl border-2 border-indigo-200 shadow-2xl animate-fade-in">
               <div className="flex justify-between items-center mb-4">
                 <h3
                   className="text-lg font-bold text-gray-900"
@@ -311,10 +335,13 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
                 </h3>
                 <button
                   onClick={clearFilters}
-                  className="text-sm text-red-600 hover:text-red-700 font-semibold flex items-center gap-1"
+                  className="text-sm text-rose-600 hover:text-rose-700 font-semibold flex items-center gap-1 group"
                   style={{ fontFamily: "'Inter', sans-serif" }}
                 >
-                  <X size={16} />
+                  <X
+                    size={16}
+                    className="group-hover:scale-110 transition-transform"
+                  />
                   Clear All
                 </button>
               </div>
@@ -333,7 +360,7 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
                     onChange={(e) =>
                       setFilters({ ...filters, location: e.target.value })
                     }
-                    className="w-full px-4 py-2.5 border-2 border-sky-200 rounded-xl bg-sky-50/50 focus:bg-white focus:border-sky-500 focus:outline-none focus:ring-4 focus:ring-sky-100 transition-all text-sm"
+                    className="w-full px-4 py-2.5 border-2 border-indigo-200 rounded-xl bg-indigo-50/50 focus:bg-white focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all text-sm"
                     style={{ fontFamily: "'Inter', sans-serif" }}
                   >
                     <option value="">All Locations</option>
@@ -358,7 +385,7 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
                     onChange={(e) =>
                       setFilters({ ...filters, propertyType: e.target.value })
                     }
-                    className="w-full px-4 py-2.5 border-2 border-sky-200 rounded-xl bg-sky-50/50 focus:bg-white focus:border-sky-500 focus:outline-none focus:ring-4 focus:ring-sky-100 transition-all text-sm"
+                    className="w-full px-4 py-2.5 border-2 border-indigo-200 rounded-xl bg-indigo-50/50 focus:bg-white focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all text-sm"
                     style={{ fontFamily: "'Inter', sans-serif" }}
                   >
                     <option value="">All Types</option>
@@ -382,7 +409,7 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
                     onChange={(e) =>
                       setFilters({ ...filters, priceRange: e.target.value })
                     }
-                    className="w-full px-4 py-2.5 border-2 border-sky-200 rounded-xl bg-sky-50/50 focus:bg-white focus:border-sky-500 focus:outline-none focus:ring-4 focus:ring-sky-100 transition-all text-sm"
+                    className="w-full px-4 py-2.5 border-2 border-indigo-200 rounded-xl bg-indigo-50/50 focus:bg-white focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all text-sm"
                     style={{ fontFamily: "'Inter', sans-serif" }}
                   >
                     <option value="">Any Price</option>
@@ -406,7 +433,7 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
                     onChange={(e) =>
                       setFilters({ ...filters, bhk: e.target.value })
                     }
-                    className="w-full px-4 py-2.5 border-2 border-sky-200 rounded-xl bg-sky-50/50 focus:bg-white focus:border-sky-500 focus:outline-none focus:ring-4 focus:ring-sky-100 transition-all text-sm"
+                    className="w-full px-4 py-2.5 border-2 border-indigo-200 rounded-xl bg-indigo-50/50 focus:bg-white focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all text-sm"
                     style={{ fontFamily: "'Inter', sans-serif" }}
                   >
                     <option value="">Any BHK</option>
@@ -424,7 +451,7 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
       </section>
 
       {/* ===== PROPERTIES GRID ===== */}
-      <div className="max-w-7xl mx-auto px-6 py-12 bg-gradient-to-b from-white to-sky-50/30">
+      <div className="max-w-7xl mx-auto px-6 py-12 bg-gradient-to-b from-white to-indigo-50/30">
         {/* Results Count */}
         <div className="mb-6">
           <p
@@ -436,7 +463,7 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
             {activeFilterCount > 0 && (
               <button
                 onClick={clearFilters}
-                className="ml-3 text-sky-600 hover:text-sky-700 underline"
+                className="ml-3 text-indigo-600 hover:text-indigo-700 underline font-semibold"
               >
                 Clear filters
               </button>
@@ -446,11 +473,11 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
 
         {displayedProperties.length === 0 ? (
           <div className="text-center py-20">
-            <div className="w-24 h-24 bg-gradient-to-br from-sky-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Home size={48} className="text-sky-600" />
+            <div className="w-24 h-24 bg-gradient-to-br from-indigo-100 to-rose-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Home size={48} className="text-indigo-600" />
             </div>
             <h3
-              className="text-3xl font-bold bg-gradient-to-r from-sky-600 to-red-600 bg-clip-text text-transparent mb-2"
+              className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-rose-600 bg-clip-text text-transparent mb-2"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               No properties found
@@ -464,7 +491,7 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
             {activeFilterCount > 0 && (
               <button
                 onClick={clearFilters}
-                className="px-6 py-3 bg-gradient-to-r from-sky-500 to-sky-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
+                className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white font-semibold rounded-full hover:shadow-lg hover:scale-105 transition-all"
                 style={{ fontFamily: "'Inter', sans-serif" }}
               >
                 Clear All Filters
@@ -477,14 +504,14 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
               <article
                 key={property._id}
                 onClick={() => handlePropertyClick(property)}
-                className={`group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border-2 border-transparent hover:border-sky-200 transition-all duration-500 transform hover:-translate-y-3 cursor-pointer ${
+                className={`group bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden transition-all duration-500 transform hover:-translate-y-3 cursor-pointer border-2 border-transparent hover:border-indigo-200 ${
                   animateCards
-                    ? "opacity-100 translate-y-0"
+                    ? "opacity-100 translate-y-0 animate-fade-in"
                     : "opacity-0 translate-y-10"
                 }`}
-                style={{ transitionDelay: `${idx * 100}ms` }}
+                style={{ animationDelay: `${idx * 150}ms` }}
               >
-                <div className="relative h-60 overflow-hidden bg-gray-200">
+                <div className="relative h-60 overflow-hidden">
                   <img
                     src={
                       property.images?.[0]?.url ||
@@ -496,7 +523,7 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                  <div className="absolute top-4 right-4 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-full font-bold text-xs shadow-2xl flex items-center gap-1 animate-pulse">
+                  <div className="absolute top-4 right-4 bg-gradient-to-r from-rose-500 to-rose-600 text-white px-4 py-2 rounded-full font-bold text-xs shadow-2xl flex items-center gap-1 animate-pulse">
                     <Sparkles size={12} />
                     For Sale
                   </div>
@@ -504,7 +531,7 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
                   {/* Price on Hover */}
                   <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
                     <div className="bg-white/95 backdrop-blur-md px-4 py-2 rounded-full">
-                      <span className="text-sky-600 font-bold text-lg">
+                      <span className="text-indigo-600 font-bold text-lg">
                         ₹{property.price?.toLocaleString("en-IN")}
                       </span>
                     </div>
@@ -513,50 +540,50 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
 
                 <div className="p-6">
                   <div
-                    className="text-2xl font-extrabold bg-gradient-to-r from-sky-600 to-red-600 bg-clip-text text-transparent mb-2"
+                    className="text-2xl font-extrabold bg-gradient-to-r from-indigo-600 to-rose-600 bg-clip-text text-transparent mb-2"
                     style={{ fontFamily: "'Poppins', sans-serif" }}
                   >
                     ₹{property.price?.toLocaleString("en-IN")}
                   </div>
 
                   <h3
-                    className="text-lg font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-sky-600 transition-colors"
+                    className="text-lg font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-indigo-600 transition-colors"
                     style={{ fontFamily: "'Poppins', sans-serif" }}
                   >
                     {property.title}
                   </h3>
 
                   <div className="flex items-center text-gray-500 mb-4 text-sm">
-                    <MapPin size={16} className="mr-1 text-red-500" />
+                    <MapPin size={16} className="mr-1 text-rose-500" />
                     <span className="font-semibold">{property.city}</span>
                   </div>
 
-                  <div className="flex justify-between items-center gap-3 text-gray-700 bg-gradient-to-r from-sky-50 to-sky-50 rounded-xl p-4 border border-sky-100">
+                  <div className="flex justify-between items-center gap-3 text-gray-700 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-4 border border-indigo-100">
                     <div className="flex flex-col items-center">
-                      <div className="bg-sky-100 p-2 rounded-lg mb-1">
-                        <Bed size={18} className="text-sky-600" />
+                      <div className="bg-indigo-100 p-2 rounded-lg mb-1">
+                        <Bed size={18} className="text-indigo-600" />
                       </div>
                       <span className="text-xs font-bold text-gray-700">
                         {property.bhk} BHK
                       </span>
                     </div>
 
-                    <div className="w-px h-10 bg-gradient-to-b from-sky-200 to-sky-200"></div>
+                    <div className="w-px h-10 bg-gradient-to-b from-indigo-200 to-indigo-200"></div>
 
                     <div className="flex flex-col items-center">
-                      <div className="bg-sky-100 p-2 rounded-lg mb-1">
-                        <Bath size={18} className="text-sky-600" />
+                      <div className="bg-indigo-100 p-2 rounded-lg mb-1">
+                        <Bath size={18} className="text-indigo-600" />
                       </div>
                       <span className="text-xs font-bold text-gray-700">
                         {property.bathrooms || 2}
                       </span>
                     </div>
 
-                    <div className="w-px h-10 bg-gradient-to-b from-sky-200 to-red-200"></div>
+                    <div className="w-px h-10 bg-gradient-to-b from-indigo-200 to-rose-200"></div>
 
                     <div className="flex flex-col items-center">
-                      <div className="bg-sky-100 p-2 rounded-lg mb-1">
-                        <Square size={18} className="text-sky-600" />
+                      <div className="bg-indigo-100 p-2 rounded-lg mb-1">
+                        <Square size={18} className="text-indigo-600" />
                       </div>
                       <span className="text-xs font-bold text-gray-700">
                         {property.area || 1200} sqft
@@ -574,7 +601,7 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
         @keyframes fade-in {
           from {
             opacity: 0;
-            transform: translateY(-10px);
+            transform: translateY(20px);
           }
           to {
             opacity: 1;
@@ -583,7 +610,7 @@ const Listings = ({ setCurrentPage, setSelectedProperty }) => {
         }
 
         .animate-fade-in {
-          animation: fade-in 0.3s ease-out;
+          animation: fade-in 0.6s ease-out forwards;
         }
       `}</style>
     </div>

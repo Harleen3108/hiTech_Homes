@@ -85,13 +85,13 @@ const Contact = () => {
     <div className="flex flex-col min-h-screen bg-white">
       <main className="flex-grow flex items-center justify-center px-4 md:px-6 py-12 md:py-20 relative overflow-hidden">
         {/* Background Blur Circles */}
-        <div className="absolute top-0 left-0 w-[300px] md:w-[450px] h-[300px] md:h-[450px] bg-sky-100 rounded-full blur-3xl opacity-40"></div>
-        <div className="absolute bottom-0 right-0 w-[300px] md:w-[450px] h-[300px] md:h-[450px] bg-red-100 rounded-full blur-3xl opacity-40"></div>
+        <div className="absolute top-0 left-0 w-[300px] md:w-[450px] h-[300px] md:h-[450px] bg-indigo-100 rounded-full blur-3xl opacity-40"></div>
+        <div className="absolute bottom-0 right-0 w-[300px] md:w-[450px] h-[300px] md:h-[450px] bg-rose-100 rounded-full blur-3xl opacity-40"></div>
 
         {/* Contact Container */}
         <div className="relative z-10 flex flex-col md:flex-row w-full max-w-5xl bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
           {/* LEFT SECTION */}
-          <div className="flex flex-col justify-center items-start bg-gradient-to-br from-sky-50 to-red-50 p-6 md:p-8 w-full md:w-1/2 gap-4">
+          <div className="flex flex-col justify-center items-start bg-gradient-to-br from-indigo-50 to-purple-50 p-6 md:p-8 w-full md:w-1/2 gap-4">
             <img
               src={logo}
               alt="Hi-Tech Homes Logo"
@@ -105,8 +105,8 @@ const Contact = () => {
             {/* PHONE CARD */}
             <div className="w-full bg-white rounded-xl p-4 shadow-md border border-gray-200 hover:shadow-lg transition-all duration-300">
               <div className="flex items-start gap-3">
-                <div className="p-2 bg-sky-100 rounded-lg">
-                  <Phone size={18} className="text-sky-600" />
+                <div className="p-2 bg-indigo-100 rounded-lg">
+                  <Phone size={18} className="text-indigo-600" />
                 </div>
                 <div>
                   <h3 className="text-sm md:text-base font-semibold text-gray-900 mb-1">
@@ -121,8 +121,8 @@ const Contact = () => {
             {/* EMAIL CARD */}
             <div className="w-full bg-white rounded-xl p-4 shadow-md border border-gray-200 hover:shadow-lg transition-all duration-300">
               <div className="flex items-start gap-3">
-                <div className="p-2 bg-sky-100 rounded-lg">
-                  <Mail size={18} className="text-sky-600" />
+                <div className="p-2 bg-indigo-100 rounded-lg">
+                  <Mail size={18} className="text-indigo-600" />
                 </div>
                 <div>
                   <h3 className="text-sm md:text-base font-semibold text-gray-900 mb-1">
@@ -139,8 +139,8 @@ const Contact = () => {
             {/* ADDRESS CARD */}
             <div className="w-full bg-white rounded-xl p-4 shadow-md border border-gray-200 hover:shadow-lg transition-all duration-300">
               <div className="flex items-start gap-3">
-                <div className="p-2 bg-sky-100 rounded-lg">
-                  <MapPin size={18} className="text-sky-600" />
+                <div className="p-2 bg-indigo-100 rounded-lg">
+                  <MapPin size={18} className="text-indigo-600" />
                 </div>
                 <div>
                   <h3 className="text-sm md:text-base font-semibold text-gray-900 mb-1">
@@ -160,7 +160,7 @@ const Contact = () => {
                 <a
                   key={i}
                   href="#"
-                  className="p-2 rounded-lg border border-gray-300 hover:bg-sky-600 hover:text-white transition-all duration-300"
+                  className="p-2 rounded-lg border border-gray-300 hover:bg-indigo-600 hover:text-white transition-all duration-300"
                 >
                   <Icon size={18} />
                 </a>
@@ -258,7 +258,7 @@ const Contact = () => {
                   id="consent"
                   checked={consent}
                   onChange={(e) => setConsent(e.target.checked)}
-                  className="mt-1 w-4 h-4 text-sky-600 border-gray-300 rounded focus:ring-sky-500"
+                  className="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                 />
                 <label
                   htmlFor="consent"
@@ -277,8 +277,8 @@ const Contact = () => {
                 disabled={loading}
                 className={`w-full py-2 rounded-lg text-white font-semibold text-sm transition-all duration-300 ${
                   loading
-                    ? "bg-sky-400 cursor-not-allowed opacity-80"
-                    : "bg-gradient-to-r from-sky-600 to-red-500 hover:shadow-lg hover:scale-[1.02]"
+                    ? "bg-indigo-400 cursor-not-allowed opacity-80"
+                    : "bg-gradient-to-r from-indigo-600 to-rose-500 hover:shadow-lg hover:scale-[1.02]"
                 }`}
               >
                 {loading ? "Sending..." : "Send Message"}
