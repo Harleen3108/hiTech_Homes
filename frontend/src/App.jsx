@@ -56,7 +56,7 @@ function App() {
       case "about":
         return <About setCurrentPage={setCurrentPage} />;
       case "contact":
-        return <Contact />;
+        return <Contact setCurrentPage={setCurrentPage} />;
       case "privacy-policy":
         return <PrivacyPolicy setCurrentPage={setCurrentPage} />;
       case "terms-conditions":

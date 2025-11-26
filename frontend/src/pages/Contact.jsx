@@ -119,8 +119,18 @@ const Contact = ({ setCurrentPage }) => {
                   <h3 className="text-sm md:text-base font-semibold text-gray-900 mb-1">
                     Sales & Support Team
                   </h3>
-                  <a href="tel:+919717988411" className="text-sm text-gray-700 hover:text-indigo-600 transition-colors block">+91-97179 88411</a>
-                  <a href="tel:+918882124222" className="text-sm text-gray-700 hover:text-indigo-600 transition-colors block">+91-88821 24222</a>
+                  <a 
+                    href="tel:+919717988411" 
+                    className="text-sm text-gray-700 hover:text-indigo-600 transition-colors block"
+                  >
+                    +91-97179 88411
+                  </a>
+                  <a 
+                    href="tel:+918882124222" 
+                    className="text-sm text-gray-700 hover:text-indigo-600 transition-colors block"
+                  >
+                    +91-88821 24222
+                  </a>
                 </div>
               </div>
             </div>
@@ -135,8 +145,18 @@ const Contact = ({ setCurrentPage }) => {
                   <h3 className="text-sm md:text-base font-semibold text-gray-900 mb-1">
                     Email To Our Team
                   </h3>
-                  <a href="mailto:info@anukulindia.com" className="text-sm text-gray-700 hover:text-indigo-600 transition-colors block">info@anukulindia.com</a>
-                  <a href="mailto:mrinal@anukulindia.com" className="text-sm text-gray-700 hover:text-indigo-600 transition-colors block">mrinal@anukulindia.com</a>
+                  <a 
+                    href="mailto:info@anukulindia.com" 
+                    className="text-sm text-gray-700 hover:text-indigo-600 transition-colors block"
+                  >
+                    info@anukulindia.com
+                  </a>
+                  <a 
+                    href="mailto:mrinal@anukulindia.com" 
+                    className="text-sm text-gray-700 hover:text-indigo-600 transition-colors block"
+                  >
+                    mrinal@anukulindia.com
+                  </a>
                 </div>
               </div>
             </div>
@@ -256,18 +276,18 @@ const Contact = ({ setCurrentPage }) => {
                 )}
               </div>
 
-              {/* CONSENT CHECKBOX */}
+              {/* CONSENT CHECKBOX WITH TERMS & PRIVACY POLICY LINKS */}
               <div className={`flex items-start gap-2 mt-4 p-3 rounded-lg border ${errors.consent ? 'border-red-300 bg-red-50' : 'border-gray-200 bg-gray-50'}`}>
                 <input
                   type="checkbox"
                   id="consent"
                   checked={consent}
                   onChange={(e) => setConsent(e.target.checked)}
-                  className="mt-0.5 w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 flex-shrink-0"
+                  className="mt-0.5 w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 flex-shrink-0 cursor-pointer"
                 />
                 <label
                   htmlFor="consent"
-                  className="text-xs text-gray-700 leading-relaxed"
+                  className="text-xs text-gray-700 leading-relaxed cursor-pointer"
                 >
                   I agree to the{" "}
                   <button
@@ -295,7 +315,7 @@ const Contact = ({ setCurrentPage }) => {
               <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className={`w-full py-2 rounded-lg text-white font-semibold text-sm transition-all duration-300 ${
+                className={`w-full py-2.5 rounded-lg text-white font-semibold text-sm transition-all duration-300 ${
                   loading
                     ? "bg-indigo-400 cursor-not-allowed opacity-80"
                     : "bg-gradient-to-r from-indigo-600 to-rose-500 hover:shadow-lg hover:scale-[1.02]"
