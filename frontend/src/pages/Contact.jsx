@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import logo from "../assets/logo1.png";
 
-const Contact = () => {
+const Contact = ({ setCurrentPage }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -52,7 +52,7 @@ const Contact = () => {
 
     // Consent validation
     if (!consent) {
-      newErrors.consent = "You must agree to be contacted";
+      newErrors.consent = "You must agree to the Terms & Conditions and Privacy Policy";
     }
 
     setErrors(newErrors);
@@ -79,6 +79,13 @@ const Contact = () => {
       console.error("Error submitting enquiry:", error);
     }
     setLoading(false);
+  };
+
+  const handleNavigate = (page) => {
+    if (setCurrentPage) {
+      setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   return (
@@ -112,8 +119,8 @@ const Contact = () => {
                   <h3 className="text-sm md:text-base font-semibold text-gray-900 mb-1">
                     Sales & Support Team
                   </h3>
-                  <p className="text-sm text-gray-700">+91 98765 43210</p>
-                  <p className="text-sm text-gray-700">+91 88821 24222</p>
+                  <a href="tel:+919717988411" className="text-sm text-gray-700 hover:text-indigo-600 transition-colors block">+91-97179 88411</a>
+                  <a href="tel:+918882124222" className="text-sm text-gray-700 hover:text-indigo-600 transition-colors block">+91-88821 24222</a>
                 </div>
               </div>
             </div>
@@ -128,10 +135,8 @@ const Contact = () => {
                   <h3 className="text-sm md:text-base font-semibold text-gray-900 mb-1">
                     Email To Our Team
                   </h3>
-                  <p className="text-sm text-gray-700">info@hitechhomes.com</p>
-                  <p className="text-sm text-gray-700">
-                    support@hitechhomes.com
-                  </p>
+                  <a href="mailto:info@anukulindia.com" className="text-sm text-gray-700 hover:text-indigo-600 transition-colors block">info@anukulindia.com</a>
+                  <a href="mailto:mrinal@anukulindia.com" className="text-sm text-gray-700 hover:text-indigo-600 transition-colors block">mrinal@anukulindia.com</a>
                 </div>
               </div>
             </div>
@@ -147,8 +152,7 @@ const Contact = () => {
                     Find Us Directly At
                   </h3>
                   <p className="text-sm text-gray-700">
-                    D-9, Vyapar Marg, Block D, Noida Sector 3, Uttar Pradesh
-                    201301
+                    D-9, Vyapar Marg, Block D, Noida Sector 3, Noida, Uttar Pradesh 201301
                   </p>
                 </div>
               </div>
@@ -252,20 +256,36 @@ const Contact = () => {
                 )}
               </div>
 
-              <div className="flex items-start gap-2 mt-4">
+              {/* CONSENT CHECKBOX */}
+              <div className={`flex items-start gap-2 mt-4 p-3 rounded-lg border ${errors.consent ? 'border-red-300 bg-red-50' : 'border-gray-200 bg-gray-50'}`}>
                 <input
                   type="checkbox"
                   id="consent"
                   checked={consent}
                   onChange={(e) => setConsent(e.target.checked)}
-                  className="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                  className="mt-0.5 w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 flex-shrink-0"
                 />
                 <label
                   htmlFor="consent"
-                  className="text-xs text-gray-600 leading-relaxed"
+                  className="text-xs text-gray-700 leading-relaxed"
                 >
-                  I agree you may contact me via Email, WhatsApp, SMS, RCS, or
-                  Call.
+                  I agree to the{" "}
+                  <button
+                    type="button"
+                    onClick={() => handleNavigate("terms-conditions")}
+                    className="text-indigo-600 hover:text-indigo-800 underline font-medium"
+                  >
+                    Terms & Conditions
+                  </button>{" "}
+                  and{" "}
+                  <button
+                    type="button"
+                    onClick={() => handleNavigate("privacy-policy")}
+                    className="text-indigo-600 hover:text-indigo-800 underline font-medium"
+                  >
+                    Privacy Policy
+                  </button>
+                  . You may contact me via Email, WhatsApp, SMS, RCS, or Call.
                 </label>
               </div>
               {errors.consent && (

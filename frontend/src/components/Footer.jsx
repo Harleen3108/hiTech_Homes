@@ -87,15 +87,46 @@ export default function Footer({ setCurrentPage }) {
                 size={16}
                 className="text-indigo-400 flex-shrink-0 mt-0.5 sm:mt-0 md:w-[18px]"
               />
-              <span>123 Skyline Avenue, Mumbai, India</span>
+              <span>
+                D-9, Vyapar Marg, Block D, Noida Sector 3, Noida, Uttar Pradesh
+                201301
+              </span>
             </li>
             <li className="flex items-center gap-2 justify-center sm:justify-start">
               <Phone size={16} className="text-indigo-400 md:w-[18px]" />
-              <span>+91 98765 43210</span>
+              <a
+                href="tel:+919717988411"
+                className="hover:text-indigo-400 transition-colors"
+              >
+                +91-97179 88411
+              </a>
+              <span className="text-gray-600">/</span>
+              <br />
+              <a
+                href="tel:+918882124222"
+                className="hover:text-indigo-400 transition-colors"
+              >
+                +91-88821 24222
+              </a>
             </li>
-            <li className="flex items-center gap-2 justify-center sm:justify-start">
-              <Mail size={16} className="text-indigo-400 md:w-[18px]" />
-              <span>info@hitechhomes.com</span>
+            <li className="flex flex-col gap-1 items-center sm:items-start">
+              <div className="flex items-center gap-2 justify-center sm:justify-start">
+                <Mail size={16} className="text-indigo-400 md:w-[18px]" />
+                <a
+                  href="mailto:info@anukulindia.com"
+                  className="hover:text-indigo-400 transition-colors"
+                >
+                  info@anukulindia.com
+                </a>
+              </div>
+              <div className="flex items-center gap-2 justify-center sm:justify-start sm:ml-6">
+                <a
+                  href="mailto:mrinal@anukulindia.com"
+                  className="hover:text-indigo-400 transition-colors"
+                >
+                  mrinal@anukulindia.com
+                </a>
+              </div>
             </li>
           </ul>
         </div>
